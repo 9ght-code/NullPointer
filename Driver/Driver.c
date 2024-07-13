@@ -45,7 +45,7 @@ NTSTATUS DeviceControl(_In_ PDEVICE_OBJECT DeviceObject, PIRP Irp) {
 				break;
 			}
 
-			DbgPrint("[+] Process ID found [+]");
+			DbgPrint("[+] Attached to the process [+]");
 
 			status = PsLookupProcessByProcessId(request->proccess_id, &target_process);
 
@@ -91,7 +91,7 @@ NTSTATUS DeviceControl(_In_ PDEVICE_OBJECT DeviceObject, PIRP Irp) {
 					PsGetCurrentProcess(), request->buffer,
 					request->size, KernelMode, &request->return_size);
 
-				DbgPrint("[+] Found proccess [+]");
+				DbgPrint("[+] Reading is successful [+]");
 
 				if (!NT_SUCCESS(status))
 					DbgPrint("[-] Some error while reading [-]");
@@ -106,10 +106,10 @@ NTSTATUS DeviceControl(_In_ PDEVICE_OBJECT DeviceObject, PIRP Irp) {
 					target_process, request->target,
 					request->size, KernelMode, &request->return_size);
 
-				DbgPrint("[+] Found proccess [+]");
+				DbgPrint("[+] Writing is successful [+]");
 
 				if (!NT_SUCCESS(status))
-					DbgPrint("[-] Some error while reading [-]");
+					DbgPrint("[-] Some error while writing [-]");
 			}
 
 			break;
