@@ -110,7 +110,7 @@ void GlowWallHack(HANDLE driver, uintptr_t client) {
 				continue;
 
 			uintptr_t listEntry2 = 0;
-			ReadMemory(driver, (uintptr_t)(entityList + (0x8 * ((listEntry2 & 0x7FFF) >> 9) + 0x10)), &listEntry2, sizeof(int*));
+			ReadMemory(driver, (uintptr_t)(entityList + (0x8 * ((pawnHandle & 0x7FFF) >> 9) + 0x10)), &listEntry2, sizeof(int*));
 
 			uintptr_t currentPawn;
 			ReadMemory(driver, (uintptr_t)(listEntry2 + (0x78 * (pawnHandle & 0x1FF))), &currentPawn, sizeof(int*));
