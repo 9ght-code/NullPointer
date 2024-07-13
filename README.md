@@ -35,7 +35,8 @@
 2. Drop the driver file on KDmapper.exe
 3. Run CS2
 4. Run NullPointer.exe (as Administrator)
-5. Enjoy!
+5. Press F9 to open the menu
+6. Enjoy!
 
 ***
 
