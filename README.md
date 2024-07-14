@@ -12,7 +12,8 @@
 + <code>read/write modes</code> the application **DOESN'T** read only!
 + <code>kernel</code> uses the driver to communicate with the process memory
 + <code>FULL C-BASED</code> it's the perfect reason for educational purposes, isn't it?
-+ <code>NO GUI</code> it's the console based application
++ ~~<code>NO GUI</code> it's the console based application~~
++ <code>Simple GUI</code> now it haves simple GUI menu!
 
 ***
 
