@@ -18,10 +18,10 @@
 ***
 
 # Features
-- [X] BHOP
-- [x] Glow WallHack
-- [X] Anti-Flash
-- [X] TriggerBot
+- [X] BHOP <code>WRITES</code>
+- [x] Glow WallHack <code>WRITES</code>
+- [X] Anti-Flash <code>WRITES</code>
+- [X] TriggerBot <code>READ</code>
 
 ***
 # TODO
@@ -29,6 +29,7 @@
 - [X] Any GUI menu
 - [ ] AimBot
 - [ ] No Recoil
+- [X] Radar Hack <code>WRITES</code>
 
 ***
 # Usage
@@ -38,6 +39,12 @@
 4. Run NullPointer.exe (as Administrator)
 5. Press F9 to open the menu
 6. Enjoy!
+
+***
+
+# WARNING!
+
+<code> WRITE </code> FEATURES DETECTED BY VAC! IT MEANS THAT YOU MAY BE BANNED IN 9/10 SITUATIONS!
 
 ***
 
@@ -51,9 +58,7 @@
 
 # TroubleShooting
 - <code>I can't load the driver, what should i do?</code>
-- [X] so, first of all, turn off the secure boot, disable Core Isolation and your vulnurable driver list
-- <code>How can i disable Core Isolation?</code>
-- [X] open regedit -> **HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity** -> Enabled (**DWORD** type) set to 0. If there's no path like this, create it
+- [X] so, first of all, disable your vulnurable driver list
 - <code>How can i disable the vulnurable driver list?</code>
 - [X] open regedit -> **HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config** -> set VulnerableDriverBlocklistEnable (**DWORD** type) to 0. If there's no path like this, create it
 
