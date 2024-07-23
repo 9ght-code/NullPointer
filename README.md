@@ -44,7 +44,7 @@
 
 # WARNING!
 
-<code> WRITE </code> FEATURES DETECTED BY VAC! IT MEANS THAT YOU MAY BE BANNED IN 9/10 SITUATIONS!
+<code> WRITE </code> FEATURES DETECTED BY VAC! IT MEANS THAT YOU MAY BE BANNED IN 9/10 SITUATIONS! SO LAUNCH THE GAME IN THE <code>SAFE</code> MODE!
 
 ***
 
@@ -61,6 +61,8 @@
 - [X] so, first of all, disable your vulnurable driver list
 - <code>How can i disable the vulnurable driver list?</code>
 - [X] open regedit -> **HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config** -> set VulnerableDriverBlocklistEnable (**DWORD** type) to 0. If there's no path like this, create it
+- <code>How can i launch the game in the safe mode?</code>
+- [X] Steam -> CS2 -> Properties -> enter <code>-insecure</code> into the launch options field
 
 ***
 # Other Links
