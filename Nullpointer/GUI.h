@@ -6,6 +6,7 @@ typedef struct _Feature {
     int Wallhack;
     int AntiFlash;
     int Bhop;
+    int RadarHack;
     boolean UNLOAD;
 
 } FeaturesStates, * PFeaturesStates;

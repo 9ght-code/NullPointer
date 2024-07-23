@@ -16,3 +16,5 @@ ptrdiff_t m_glowColorOverride = 0x40;
 ptrdiff_t m_bGlowing = 0x51;
 ptrdiff_t m_fFlags = 0x3CC; 
 ptrdiff_t jump = 0x181C670;
+ptrdiff_t m_entitySpottedState = 0x2288;
+ptrdiff_t m_bSpotted = 0x8;

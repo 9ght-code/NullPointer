@@ -132,6 +132,7 @@ void showWindow(PFeaturesStates Features) {
             static enum State wallHack = DISABLED;
             static enum State BHOP = DISABLED;
             static enum State AntiFlash = DISABLED;
+            static enum State Radar = DISABLED;
 
             nk_layout_row_dynamic(ctx, 30, 2);
             nk_label(ctx, "TriggerBot", NK_LEFT);
@@ -189,6 +190,18 @@ void showWindow(PFeaturesStates Features) {
             {
                 AntiFlash = DISABLED;
                 Features->AntiFlash = 0;
+            }
+
+            nk_label(ctx, "RadarHack", NK_LEFT);
+            if (nk_option_label(ctx, "Enabled", Radar == ENABLED))
+            {
+                Radar = ENABLED;
+                Features->RadarHack = 1;
+            }
+            else
+            {
+                Radar = DISABLED;
+                Features->RadarHack= 0;
             }
 
             nk_layout_row_dynamic(ctx, 30, 1);
