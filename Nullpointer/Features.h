@@ -5,6 +5,6 @@ void TriggerBot(HANDLE driver, uintptr_t client);
 
 void AntiFlashBang(HANDLE driver, uintptr_t client);
 
-void GlowWallHack(HANDLE driver, uintptr_t client);
+void MultiHack(HANDLE driver, uintptr_t client, int Wallhack, int RadarHack);
 
 void Bhop(HANDLE driver, uintptr_t client);

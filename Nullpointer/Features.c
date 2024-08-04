@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include "memory.h"
 #include "Offsets.h"
+#include "Math.h"
+#include "GUI.h"
 
 void TriggerBot(HANDLE driver, uintptr_t client) {
 
@@ -75,7 +77,8 @@ void AntiFlashBang(HANDLE driver, uintptr_t client) {
 }
 
 
-void GlowWallHack(HANDLE driver, uintptr_t client) {
+void MultiHack(HANDLE driver, uintptr_t client, int Wallhack, int RadarHack) { // RadarHack and Wallhack are combined into one func to optimize using resources
+
 	uintptr_t localPlayer;
 	ReadMemory(driver, (uintptr_t)(client + dwLocalPlayerPawn), &localPlayer, sizeof(int*));
 
@@ -91,8 +94,8 @@ void GlowWallHack(HANDLE driver, uintptr_t client) {
 	uintptr_t listEntry;
 	ReadMemory(driver, (uintptr_t)(entityList + 0x10), &listEntry, sizeof(int*));
 
-	if (iHealth > 0) {
-		for (int i = 0; i < 32; i++) {
+	if ((Wallhack == 1 || RadarHack == 1)) {
+		for (int i = 0; i < 64; i++) {
 
 			if (listEntry == 0)
 				continue;
@@ -109,7 +112,7 @@ void GlowWallHack(HANDLE driver, uintptr_t client) {
 			if (pawnHandle == 0)
 				continue;
 
-			uintptr_t listEntry2 = 0;
+			uintptr_t listEntry2;
 			ReadMemory(driver, (uintptr_t)(entityList + (0x8 * ((pawnHandle & 0x7FFF) >> 9) + 0x10)), &listEntry2, sizeof(int*));
 
 			uintptr_t currentPawn;
@@ -121,10 +124,13 @@ void GlowWallHack(HANDLE driver, uintptr_t client) {
 			int health;
 			ReadMemory(driver, (uintptr_t)(currentPawn + m_iHealth), &health, sizeof(int));
 
-			if (health > 0 && team != entityTeam) {
+			if (health > 0 && team != entityTeam && Wallhack == 1) { //WallHack
 				WriteMemory(driver, (uintptr_t)(currentPawn + m_Glow + m_glowColorOverride), 0xFF800080, sizeof(int));
 				WriteMemory(driver, (uintptr_t)(currentPawn + m_Glow + m_bGlowing), 1, 1);
 			}
+
+			if (health > 0 && RadarHack == 1)
+				WriteMemory(driver, (uintptr_t)(currentPawn + m_entitySpottedState + m_bSpotted), 1, sizeof(boolean)); //RadarHack
 
 		}
 
@@ -141,7 +147,7 @@ void Bhop(HANDLE driver, uintptr_t client) {
 	int iHealth;
 	ReadMemory(driver, (uintptr_t)(localPlayer + m_iHealth), &iHealth, sizeof(int));
 
-	if (iHealth > 0 && localPlayer > 0) {
+	if (localPlayer > 0) {
 
 		int flags;
 		ReadMemory(driver, (uintptr_t)(localPlayer + m_fFlags), &flags, sizeof(int));
