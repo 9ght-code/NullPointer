@@ -18,18 +18,24 @@
     <ClCompile Include="NullPointer.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="memory.c">
+    <ClCompile Include="Memory\memory.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Features.c">
+    <ClCompile Include="Features\Features.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="GUI.c">
+    <ClCompile Include="GUI\GUI.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Math.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="dependencies.h">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="memory.h">
+    <ClInclude Include="Memory\memory.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="NullPointer.h">
@@ -38,7 +44,7 @@
     <ClInclude Include="Offsets.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Features.h">
+    <ClInclude Include="Features\Features.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Libraries\include\nuklear.h">
@@ -47,7 +53,13 @@
     <ClInclude Include="Libraries\include\nuklear_sdl_renderer.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="GUI.h">
+    <ClInclude Include="GUI\GUI.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Math.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Request.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

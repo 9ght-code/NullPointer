@@ -1,8 +1,4 @@
-#include <ntifs.h>
-#include <ntddk.h>
-#include "../NullPointer/NullPointer.h"
 #include "Driver.h"
-#include "IO_Operations.h"
 
 
 //GLOBALS

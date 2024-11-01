@@ -1,20 +1,24 @@
 #pragma once
-#include <Windows.h>
+typedef __int64 ptrdiff_t;
 
-//offsets
-ptrdiff_t dwEntityList = 0x19BDD58;
-ptrdiff_t dwLocalPlayerPawn = 0x1823A08;
+// [<-----OFFSETS----->]
+ptrdiff_t dwEntityList = 0x19D1A98; //int pointer to the list. ptrdfitt_t is the same as __int64
+ptrdiff_t dwLocalPlayerPawn = 0x1836BB8; // int pointer to the local player
+ptrdiff_t dwViewMatrix = 0x1A33E30;
 
-//client.dll
-ptrdiff_t m_hPlayerPawn = 0x7DC;
-ptrdiff_t m_flFlashBangTime = 0x1348; // float32
-ptrdiff_t m_iIDEntIndex = 0x13A8;
-ptrdiff_t m_iTeamNum = 0x3C3;
-ptrdiff_t m_iHealth = 0x324; // int32
-ptrdiff_t m_Glow = 0xBA0;
+// [<-----CLIENT.DLL----->]
+ptrdiff_t m_hPlayerPawn = 0x80C;
+ptrdiff_t m_flFlashBangTime = 0x13F8; // float32
+ptrdiff_t m_iIDEntIndex = 0x1458;
+ptrdiff_t m_iTeamNum = 0x3E3;
+ptrdiff_t m_lifestate = 0x348;
+ptrdiff_t m_iHealth = 0x344; // int32
+ptrdiff_t m_Glow = 0xC00;
 ptrdiff_t m_glowColorOverride = 0x40;
 ptrdiff_t m_bGlowing = 0x51;
-ptrdiff_t m_fFlags = 0x3CC; 
+ptrdiff_t m_fFlags = 0x3EC;
 ptrdiff_t jump = 0x181C670;
-ptrdiff_t m_entitySpottedState = 0x2288;
+ptrdiff_t m_entitySpottedState = 0x23B8;
 ptrdiff_t m_bSpotted = 0x8;
+ptrdiff_t m_vOldOrigin = 0x1324;
+ptrdiff_t m_vecViewOffset = 0xCB0;

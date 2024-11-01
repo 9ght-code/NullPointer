@@ -1,6 +1,8 @@
-﻿#include "memory.h"
-#include "Features.h"
-#include "GUI.h"
+﻿#define MEMORY
+#define GUI
+#define FEATURES
+#include "NullPointer.h"
+
 
 FeaturesStates Features = { .TriggerBot = 0, .Wallhack = 0, .Bhop = 0, .AntiFlash = 0, .RadarHack = 0, .UNLOAD = FALSE};
 
@@ -14,7 +16,6 @@ int main() {
 	DWORD dwThreadId;
 
 	HANDLE driver = loadDriver();
-
 	uintptr_t client = initClient(driver);
 
 	if (client == 0) {
@@ -25,25 +26,11 @@ int main() {
 	}
 
 	WINThread = CreateThread(NULL, 0, ThreadWindowFunc, NULL, 0, &dwThreadId);
-
+	InitFeatures(&Features);
 
 	while (TRUE) {
 
-		if (Features.TriggerBot == 1)
-			TriggerBot(driver, client);
-
-		if (Features.AntiFlash == 1)
-			AntiFlashBang(driver, client);
-
-		if (Features.Wallhack == 1 || Features.RadarHack == 1)
-			MultiHack(driver, client, Features.Wallhack, Features.RadarHack);
-
-		if (Features.Bhop == 1)
-			Bhop(driver, client);
-
-		if (Features.UNLOAD)
-			UnloadDriver(driver);
-		
+		MultiHack(&driver, client);
 	}
 	
 	return 0;
