@@ -413,7 +413,7 @@ void _showGlowTab(struct nk_context* ctx, int* wallhack, PFeaturesStates Feature
     conf.glowColor = nk_color_picker(ctx, conf.glowColor, NK_RGBA);
 }
 
-void _showMiscTab(struct nk_context* ctx, int* antiFlash, PFeaturesStates Features) {
+void _showMiscTab(struct nk_context* ctx, int* antiFlash, int* radar, PFeaturesStates Features) {
     static boolean popup = TRUE;
 
     nk_layout_row_dynamic(ctx, 50, 1);
@@ -429,6 +429,21 @@ void _showMiscTab(struct nk_context* ctx, int* antiFlash, PFeaturesStates Featur
         popup = TRUE;
         *antiFlash = DISABLED;
         Features->AntiFlash = 0;
+    }
+
+    nk_layout_row_dynamic(ctx, 50, 1);
+
+    if (nk_check_label(ctx, "Enable Radar", *radar == ENABLED)) {
+        *radar = ENABLED;
+
+        if (popup)
+            _warningPopup(ctx, antiFlash, &Features->RadarHack, &popup);
+    }
+
+    else {
+        popup = TRUE;
+        *radar = DISABLED;
+        Features->RadarHack = 0;
     }
 }
 
