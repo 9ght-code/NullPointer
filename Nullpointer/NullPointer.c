@@ -1,10 +1,15 @@
 ﻿#define MEMORY
 #define GUI
 #define FEATURES
+#define ENTITY_STRUCTURE
+#define CONFIG
+
 #include "NullPointer.h"
 
+FeaturesStates Features = { 0 };
+Entity entities[64] = {0};
+Config data = { 0 };
 
-FeaturesStates Features = { .TriggerBot = 0, .Wallhack = 0, .Bhop = 0, .AntiFlash = 0, .RadarHack = 0, .UNLOAD = FALSE};
 
 DWORD WINAPI ThreadWindowFunc(LPVOID lpParam) {
 	showWindow(&Features);
@@ -16,7 +21,7 @@ int main() {
 	DWORD dwThreadId;
 
 	HANDLE driver = loadDriver();
-	uintptr_t client = initClient(driver);
+	uintptr_t client = initClient(&driver);
 
 	if (client == 0) {
 		puts("[-] INIT FAILURE [-]");
@@ -26,12 +31,11 @@ int main() {
 	}
 
 	WINThread = CreateThread(NULL, 0, ThreadWindowFunc, NULL, 0, &dwThreadId);
-	InitFeatures(&Features);
+	
+	InitPointersFeatures(&Features, &entities);
+	InitPointersGUI(&entities, &data);
 
-	while (TRUE) {
-
-		MultiHack(&driver, client);
-	}
+	while (TRUE) { MultiHack(&driver, client); }
 	
 	return 0;
 }

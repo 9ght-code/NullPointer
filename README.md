@@ -7,7 +7,7 @@
 </p>
 
 + <code>NullPointer</code> is a simple cheat for CS2 
-+ <code>external</code> it doesn't inject in the proccess
++ <code>external</code> it doesn't inject into the proccess
 + <code>open source</code> you can use it freely
 + <code>read/write modes</code> the application **DOESN'T** read only!
 + <code>kernel</code> uses the driver to communicate with the process memory
@@ -25,7 +25,13 @@
 
 ***
 # TODO
-- [ ] GUI Wallhack
+- [X] GUI Wallhack <code>READ</code>
+ - 2D Box
+ - Line
+ - Changes the color when player is zooming
+ - Changes the color when player is defusing
+ - HP bar
+   
 - [X] Any GUI menu
 - [ ] AimBot
 - [ ] No Recoil
@@ -40,6 +46,7 @@
 5. Press F9 to open the menu
 6. Enjoy!
 
+
 ***
 
 # WARNING!
@@ -49,16 +56,17 @@
 ***
 
 # ScreenShots
-![](https://github.com/user-attachments/assets/99309225-502b-4f8e-80fa-e6b84f524105)
+![](https://github.com/user-attachments/assets/bb23dfd4-7b6a-4705-9b89-b4faa8f96634)
 
+![](https://github.com/user-attachments/assets/514ef043-3497-4de0-bb24-751532241d09)
 
-![](https://github.com/user-attachments/assets/cc81676f-2b56-4da6-8695-14a3a3721da3)
-
+- Sometimes the cursor may appear when clicking on the box
+- You need to set the color for each ESP feature manually!
 ***
 
 # TroubleShooting
 - <code>I can't load the driver, what should i do?</code>
-- [X] so, first of all, disable your vulnurable driver list
+- [X] so, first of all, disable your vulnerable driver list
 - <code>How can i disable the vulnurable driver list?</code>
 - [X] open regedit -> **HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config** -> set VulnerableDriverBlocklistEnable (**DWORD** type) to 0. If there's no path like this, create it
 - <code>How can i launch the game in the safe mode?</code>

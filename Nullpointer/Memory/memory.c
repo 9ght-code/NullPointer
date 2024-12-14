@@ -27,6 +27,24 @@ static uintptr_t get_module_base(const DWORD pid, const wchar_t* module_name) {
 	return module_base;
 }
 
+// Функция для перемещения мыши на дельта-вектор
+void moveMouse(int dx, int dy) {
+	INPUT input = { 0 };
+	input.type = INPUT_MOUSE;
+	input.mi.dx = dx;
+	input.mi.dy = dy;
+	input.mi.dwFlags = MOUSEEVENTF_MOVE;
+	SendInput(1, &input, sizeof(INPUT));
+}
+
+// Функция для получения текущей позиции мыши
+void getCursorPosition(int* x, int* y) {
+	POINT cursorPos;
+	GetCursorPos(&cursorPos);
+	*x = cursorPos.x;
+	*y = cursorPos.y;
+}
+
 
 DWORD get_process_id(const wchar_t* process_name) {
 	DWORD process_id = 0;
@@ -58,7 +76,7 @@ DWORD get_process_id(const wchar_t* process_name) {
 
 }
 
-BOOL ReadMemory(HANDLE hDevice, uintptr_t address, PVOID buffer, SIZE_T size) {
+boolean ReadMemory(HANDLE hDevice, uintptr_t address, PVOID buffer, SIZE_T size) {
 	Request shared_request;
 	BOOL status;
 
@@ -84,8 +102,7 @@ BOOL ReadMemory(HANDLE hDevice, uintptr_t address, PVOID buffer, SIZE_T size) {
 	return TRUE;
 }
 
-
-BOOL WriteMemory(HANDLE hDevice, uintptr_t address, int value, SIZE_T size) {
+boolean WriteMemory(HANDLE hDevice, uintptr_t address, int value, SIZE_T size) {
 	Request r;
 
 	r.target = (PVOID)address;
@@ -100,12 +117,11 @@ BOOL WriteMemory(HANDLE hDevice, uintptr_t address, int value, SIZE_T size) {
 	return TRUE;
 }
 
-boolean attach_to_process(HANDLE DriverHandle, const DWORD pid) {
+boolean attach_to_process(PHANDLE DriverHandle, const DWORD pid) {
 	Request req;
-
 	req.proccess_id = (HANDLE)pid;
 
-	return DeviceIoControl(DriverHandle, IO_ATTACH, &req, sizeof(Request), &req, sizeof(Request), NULL, NULL);
+	return DeviceIoControl(*DriverHandle, IO_ATTACH, &req, sizeof(Request), &req, sizeof(Request), NULL, NULL);
 }
 
 
@@ -129,7 +145,7 @@ HANDLE loadDriver() {
 }
 
 
-uintptr_t initClient(HANDLE driver) {
+uintptr_t initClient(PHANDLE driver) {
 
 	const DWORD pid = get_process_id(L"cs2.exe");
 
@@ -153,4 +169,59 @@ uintptr_t initClient(HANDLE driver) {
 		puts("[+] Attachment successful [+]\n");
 
 	return client;
+}
+
+void _SetPageName(PMemoryPool region, const char* regionName) {
+	region->name = regionName;
+}
+
+int GetFreeMemory(PMemoryPool pool, int offset) {
+
+	if (pool->offset == 0)
+		return 1024 - offset;
+
+	return 1024 - pool->offset - offset;
+}
+
+void* AllocatePool(PMemoryPool pool, const size_t size, const char* regionName) {
+
+	if (pool->offset + size > 1024)
+		return NULL;
+
+	void* ptr = &pool->memory[pool->offset];
+	_SetPageName((PMemoryPool)ptr, regionName);
+
+	pool->offset += size;
+	
+	return ptr;
+}
+
+int GetItemsCount(PMemoryPool pool, const int offset) {
+	return ((1024 - GetFreeMemory(pool, offset)) / offset) - 1;
+}
+
+void* FindByPageName(PMemoryPool pool, const char* regionName, const int offset) {
+	int totalItems = (1024 - offset) / offset;
+	
+
+	for (int page = 0; page < totalItems; page++) {
+		PMemoryPool currentPage = (PMemoryPool) ReadFromPool(pool, offset, page);
+
+		if (page == 0)
+			currentPage = (PMemoryPool)ReadFromPool(pool, 0, 0);
+
+		if (strcmp(regionName, currentPage->name) == 0) 
+			return currentPage;
+		
+	}
+
+	return NULL;
+}
+
+void* ReadFromPool(PMemoryPool pool, const int offset, const int itemPlacement) {
+	return &pool->memory[offset * itemPlacement];
+}
+
+void ResetPool(PMemoryPool pool) {
+	pool->offset = 0;
 }
