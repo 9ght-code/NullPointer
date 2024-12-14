@@ -33,6 +33,9 @@
     <ClCompile Include="dependencies.h">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\Themes\NuklearThemes.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Memory\memory.h">
@@ -60,6 +63,12 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Request.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Themes\NuklearThemes.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\NuklearDefinition.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
