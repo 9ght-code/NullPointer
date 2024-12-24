@@ -2,9 +2,9 @@
 typedef __int64 ptrdiff_t;
 
 // [<-----OFFSETS----->]
-ptrdiff_t dwEntityList = 0x19F2488;
-ptrdiff_t dwLocalPlayerPawn = 0x1855CE8;
-ptrdiff_t dwViewMatrix = 0x1A54550;
+ptrdiff_t dwEntityList = 0x1A146E8;
+ptrdiff_t dwLocalPlayerPawn = 0x1868CC8;
+ptrdiff_t dwViewMatrix = 0x1A7F610;
 
 // [<-----CLIENT.DLL----->]
 ptrdiff_t m_hPlayerPawn = 0x80C;
@@ -18,7 +18,7 @@ ptrdiff_t m_glowColorOverride = 0x40;
 ptrdiff_t m_bGlowing = 0x51;
 ptrdiff_t m_fFlags = 0x3EC;
 ptrdiff_t jump = 0x181C670;
-ptrdiff_t m_entitySpottedState = 0x23B8;
+ptrdiff_t m_entitySpottedState = 0x23D0;
 ptrdiff_t m_bSpotted = 0x8;
 ptrdiff_t m_vOldOrigin = 0x1324;
 ptrdiff_t m_vecViewOffset = 0xCB0;

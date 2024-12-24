@@ -160,7 +160,7 @@ PAppInfo _InitGUI() {
 void _DrawESP(PFeaturesStates Features) {
     for (int i = 0; i < 64; i++) {
 
-        if (entities[i].draw == 1)
+        if (entities[i].draw == 1 || entities[i].health <= 0 || entities[i].pawn == NULL)
             continue;
 
         SDL_Rect model = { .x = entities[i].position.x - 10, .y = entities[i].screenHead.y, .h = entities[i].height, .w = entities[i].width };
@@ -413,38 +413,42 @@ void _showGlowTab(struct nk_context* ctx, int* wallhack, PFeaturesStates Feature
     conf.glowColor = nk_color_picker(ctx, conf.glowColor, NK_RGBA);
 }
 
-void _showMiscTab(struct nk_context* ctx, int* antiFlash, int* radar, PFeaturesStates Features) {
-    static boolean popup = TRUE;
+void _AntiFlashCheck(struct nk_context* ctx, int* antiFlash, PFeaturesStates Features) {
+    static boolean showPopupAnti = 1;
 
-    nk_layout_row_dynamic(ctx, 50, 1);
-
-    if (nk_check_label(ctx, "Enable AntiFlash", *antiFlash == ENABLED)) {
+    if (nk_check_label(ctx, "AntiFlash", *antiFlash == ENABLED)) {
         *antiFlash = ENABLED;
 
-        if (popup)
-            _warningPopup(ctx, antiFlash, &Features->AntiFlash, &popup);
-    } 
+        if (showPopupAnti)
+            _warningPopup(ctx, antiFlash, &Features->AntiFlash, &showPopupAnti);
+    }
 
     else {
-        popup = TRUE;
+        showPopupAnti = 1;
         *antiFlash = DISABLED;
         Features->AntiFlash = 0;
     }
+}
 
-    nk_layout_row_dynamic(ctx, 50, 1);
+void _showMiscTab(struct nk_context* ctx, int* antiFlash, int* radar, PFeaturesStates Features) {
+    static boolean showPopup = 1;
+    static boolean showPopupAnti = 1;
 
-    if (nk_check_label(ctx, "Enable Radar", *radar == ENABLED)) {
+    nk_layout_row_dynamic(ctx, 30, 1);
+    if (nk_check_label(ctx, "RadarHack", *radar == ENABLED)) {
         *radar = ENABLED;
 
-        if (popup)
-            _warningPopup(ctx, antiFlash, &Features->RadarHack, &popup);
+        if (showPopup)
+            _warningPopup(ctx, radar, &Features->RadarHack, &showPopup);
     }
 
     else {
-        popup = TRUE;
+        showPopup = 1;
         *radar = DISABLED;
         Features->RadarHack = 0;
     }
+
+    _AntiFlashCheck(ctx, antiFlash, Features);
 }
 
 void _showTriggerTab(struct nk_context* ctx, int* triggerBot, PFeaturesStates Features) {
@@ -552,7 +556,7 @@ void showWindow(PFeaturesStates Features) {
                 }
 
                 else if (activeTab == TAB_MISC)
-                    _showMiscTab(appInfo->ctx, &antiFlash, Features);
+                    _showMiscTab(appInfo->ctx, &antiFlash, &radar, Features);
                 
             }
 

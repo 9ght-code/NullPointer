@@ -1,9 +1,9 @@
 #pragma once
 
-// Core system headers
 #include <Windows.h>
 #include <stdio.h>
 #include <TlHelp32.h>
+#include "../Driver/IO_Operations.h"
 
 #define WINDOW_WIDTH GetSystemMetrics(SM_CXSCREEN)
 #define WINDOW_HEIGHT GetSystemMetrics(SM_CYSCREEN)
@@ -21,7 +21,13 @@ typedef struct _Feature {
 
     boolean UNLOAD;
 
-} FeaturesStates, *PFeaturesStates;
+} FeaturesStates, * PFeaturesStates;
+
+typedef struct _Config {
+	int sleepTime;
+	int sleepTriggerTime;
+
+}Config, * PConfig;
 
 #ifdef ENTITY_STRUCTURE
 
@@ -66,9 +72,8 @@ typedef struct _Entity {
 
 #ifdef MATH
 #include "Math/Math.h"
-#endif // MATH
+#endif
 
-// Full stack configuration includes all modules
 #ifdef FULL_STACK
 #include "Offsets.h"
 #include "Memory/memory.h"
@@ -76,3 +81,6 @@ typedef struct _Entity {
 #include "Features/Features.h"
 #include "Math/Math.h"
 #endif // FULL_STACK
+
+
+
