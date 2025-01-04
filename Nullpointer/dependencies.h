@@ -17,6 +17,8 @@ typedef struct _Feature {
 	boolean AntiFlash;
 	boolean Bhop;
 	boolean RadarHack;
+	boolean ESPTeamCheck;
+	boolean TriggerTeamCheck;
 	boolean poolLoaded;
 
     boolean UNLOAD;
@@ -26,6 +28,7 @@ typedef struct _Feature {
 typedef struct _Config {
 	int sleepTime;
 	int sleepTriggerTime;
+	boolean shootInAir;
 
 }Config, * PConfig;
 
@@ -36,15 +39,21 @@ typedef struct _Entity {
 	boolean draw;
 	boolean isScoped;
 	boolean isDefusing;
+	boolean isAlly;
+
 	uintptr_t pawn;
 	UINT8 team;
 	UINT8 health;
+
 	Vector3 absOrigin;
-	Vector3 eyePos;
 	Vector2 position;
 	Vector2 screenHead;
+
 	float width;
 	float height;
+
+	int* sceneNode;
+	int* model;
 
 }Entity, * PEntity;
 

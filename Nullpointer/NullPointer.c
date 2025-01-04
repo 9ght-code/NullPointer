@@ -8,7 +8,7 @@
 
 FeaturesStates Features = { 0 };
 Entity entities[64] = {0};
-Config data = { 0 };
+static Config data = { .sleepTime = 0, .sleepTriggerTime = 10, .shootInAir = 0};
 
 
 DWORD WINAPI ThreadWindowFunc(LPVOID lpParam) {
@@ -32,7 +32,7 @@ int main() {
 
 	WINThread = CreateThread(NULL, 0, ThreadWindowFunc, NULL, 0, &dwThreadId);
 	
-	InitPointersFeatures(&Features, &entities);
+	InitPointersFeatures(&Features, &entities, &data);
 	InitPointersGUI(&entities, &data);
 
 	while (TRUE) { MultiHack(&driver, client); }

@@ -8,6 +8,7 @@
 
 PFeaturesStates featuresPointer = { 0 };
 PEntity entitiesList = { 0 };
+PConfig data = { 0 };
 
 //[<-----PRIVATE METHODS----->]
 
@@ -22,22 +23,20 @@ void static _AntiFlash(PHANDLE driver, uintptr_t localPlayer) {
 Entity _InitializeEnemy(PHANDLE driver, uintptr_t listEntry2, int pawnHandle, PViewMatrix4x4 matrix) {
 	Entity currentEnemy = { 0 };
 
-	uintptr_t currentPawn;
 	ReadMemory(*driver, (uintptr_t)(listEntry2 + (0x78 * (pawnHandle & 0x1FF))), &currentEnemy.pawn, sizeof(int*));
-
-	UINT8 health;
 	ReadMemory(*driver, (uintptr_t)(currentEnemy.pawn + m_iHealth), &currentEnemy.health, sizeof(UINT8));
-
-	UINT8 entityTeam;
 	ReadMemory(*driver, (uintptr_t)(currentEnemy.pawn + m_iTeamNum), &currentEnemy.team, sizeof(UINT8));
 
 	ReadMemory(*driver, (uintptr_t)(currentEnemy.pawn + m_vOldOrigin), &currentEnemy.absOrigin, sizeof(Vector3));
-	ReadMemory(*driver, (uintptr_t)(currentEnemy.pawn + m_vecViewOffset), &currentEnemy.eyePos, sizeof(Vector3));
+	ReadMemory(*driver, (uintptr_t)(currentEnemy.pawn + m_pGameSceneNode), &currentEnemy.sceneNode, sizeof(int*));
+	ReadMemory(*driver, (uintptr_t)(currentEnemy.sceneNode + m_modelState + 0x80), &currentEnemy.model, sizeof(int*));
+
 	ReadMemory(*driver, (uintptr_t)(currentEnemy.pawn + m_bIsScoped), &currentEnemy.isScoped, sizeof(boolean));
 	ReadMemory(*driver, (uintptr_t)(currentEnemy.pawn + m_bIsDefusing), &currentEnemy.isDefusing, sizeof(boolean));
 
 	if (WorldToScreen(&currentEnemy.absOrigin, &currentEnemy.position, matrix, WINDOW_WIDTH, WINDOW_HEIGHT) == 1) {
 		Vector3 head = { .x = currentEnemy.absOrigin.x, .y = currentEnemy.absOrigin.y, .z = currentEnemy.absOrigin.z + 75.f };
+		ReadMemory(*driver, (uintptr_t)(currentEnemy.model + (6 * 32)), &head, sizeof(Vector3));
 
 		if (WorldToScreen(&head, &currentEnemy.screenHead, matrix, WINDOW_WIDTH, WINDOW_HEIGHT) == 1) {
 
@@ -73,12 +72,38 @@ void static _Glow(PHANDLE driver, uintptr_t currentPawn) {
 	WriteMemory(*driver, (uintptr_t)(currentPawn + m_Glow + m_bGlowing), 1, 1);
 }
 
+void _TriggerBot(PEntity localPlayer, UINT8* triggerEntityTeam, int* flags) {
+	boolean notInAir = *flags & (1 << 0);
+
+	if (notInAir) {
+
+
+		if (featuresPointer->TriggerTeamCheck && *triggerEntityTeam != localPlayer->team)
+		{
+			mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
+			Sleep(data->sleepTriggerTime);
+			mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+			Sleep(data->sleepTriggerTime);
+		}
+
+		else if (!featuresPointer->TriggerTeamCheck)
+		{
+			mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
+			Sleep(data->sleepTriggerTime);
+			mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+			Sleep(data->sleepTriggerTime);
+		}
+
+	}
+}
+
 
 //[<-----PUBLIC METHODS----->]
 
-void InitPointersFeatures(PFeaturesStates statesPointer, PEntity array) {
+void InitPointersFeatures(PFeaturesStates statesPointer, PEntity array, PConfig config) {
 	featuresPointer = statesPointer;
 	entitiesList = array;
+	data = config;
 }
 
 void MultiHack(PHANDLE driver, uintptr_t client) {
@@ -92,6 +117,7 @@ void MultiHack(PHANDLE driver, uintptr_t client) {
 	int ESPLine = featuresPointer->Line;
 	int ESPHealth = featuresPointer->Health;
 	int RadarHack = featuresPointer->RadarHack;
+	int EspTeamCheck = featuresPointer->ESPTeamCheck;
 
 	Entity localPlayer = _InitializePlayer(driver, client);
 
@@ -104,11 +130,12 @@ void MultiHack(PHANDLE driver, uintptr_t client) {
 	ViewMatrix4x4 matrix;
 	ReadMemory(*driver, (uintptr_t)(client + dwViewMatrix), &matrix.matrix, sizeof(int[4][4]));
 
-	if (WallHack == 1 || RadarHack == 1 || TriggerBot == 1 || ESPLine || ESPBox || ESPHealth && localPlayer.health > 0) {
+	Entity nearestPlayer = { 0 };
+	float minDist = 100000000;
+
+	if ((WallHack == 1 || RadarHack == 1 || TriggerBot == 1 || ESPLine || ESPBox || ESPHealth || EspTeamCheck == 1) && localPlayer.health > 0) {
 
 		for (int i = 0; i < 64; i++) {
-
-			// [<-----VARS----->]
 
 			if (listEntry == 0)
 				continue;
@@ -145,13 +172,29 @@ void MultiHack(PHANDLE driver, uintptr_t client) {
 
 			Entity currenEnemy = _InitializeEnemy(driver, listEntry2, pawnHandle, &matrix);
 
-			if (currenEnemy.health <= 0 || currenEnemy.team == localPlayer.team) {
+			if (currenEnemy.health <= 0) {
 				currenEnemy.draw = 1;
 				entitiesList[i] = currenEnemy;
 
 				continue;
 			}
 
+			if (!featuresPointer->ESPTeamCheck && currenEnemy.team == localPlayer.team) {
+				currenEnemy.draw = 1;
+				entitiesList[i] = currenEnemy;
+
+				continue;
+			}
+
+			else if (featuresPointer->ESPTeamCheck && localPlayer.team == currenEnemy.team)
+				currenEnemy.isAlly = 1;
+
+			float currentDist = CalculateDistance2D(&((Vector2) {WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2}), &currenEnemy.screenHead);
+
+			if (currentDist < minDist) {
+				minDist = currentDist;
+				nearestPlayer = currenEnemy;
+			}
 			entitiesList[i] = currenEnemy;
 
 			// [<-----FUNCS----->]
@@ -159,21 +202,16 @@ void MultiHack(PHANDLE driver, uintptr_t client) {
 			if (WallHack)
 				_Glow(driver, currenEnemy.pawn);
 
-			if (TriggerBot == 1) {
-				boolean notInAir = flags & (1 << 0);
-
-				if (notInAir && triggerEntityHealth > 0 && triggerEntityTeam != localPlayer.team && entityIndex > 0) {
-					mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
-					Sleep(10);
-					mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
-					Sleep(10);
-				}
+			if (TriggerBot == 1 && entityIndex > 0 && triggerEntityHealth > 0) {
+				_TriggerBot(&localPlayer, &triggerEntityTeam, &flags);
 			}
 
 			if (RadarHack == 1) // RadarHack
 				WriteMemory(*driver, (uintptr_t)(currenEnemy.pawn + m_entitySpottedState + m_bSpotted), 1, sizeof(boolean));
 
 		}
+
+		minDist = 10000000;
 
 
 		if (AntiFlash == 1 && localPlayer.health > 0)
@@ -187,7 +225,7 @@ void MultiHack(PHANDLE driver, uintptr_t client) {
 	if (AntiFlash == 1 && localPlayer.health > 0)
 		_AntiFlash(driver, localPlayer.pawn);
 
-	Sleep(20);
+	Sleep(data->sleepTime);
 }
 
 
