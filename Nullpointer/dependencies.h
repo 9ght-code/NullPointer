@@ -20,6 +20,7 @@ typedef struct _Feature {
 	boolean ESPTeamCheck;
 	boolean TriggerTeamCheck;
 	boolean poolLoaded;
+	boolean Ghost;
 
     boolean UNLOAD;
 
@@ -27,8 +28,9 @@ typedef struct _Feature {
 
 typedef struct _Config {
 	int sleepTime;
-	int sleepTriggerTime;
+	DWORD sleepTriggerTime;
 	boolean shootInAir;
+	const SYSTEM_INFO sysinf;
 
 }Config, * PConfig;
 
@@ -52,8 +54,8 @@ typedef struct _Entity {
 	float width;
 	float height;
 
-	int* sceneNode;
-	int* model;
+	uintptr_t sceneNode;
+	uintptr_t model;
 
 }Entity, * PEntity;
 
@@ -83,13 +85,18 @@ typedef struct _Entity {
 #include "Math/Math.h"
 #endif
 
+#ifdef UTILS
+#endif // UTILS
+
+
 #ifdef FULL_STACK
 #include "Offsets.h"
 #include "Memory/memory.h"
 #include "GUI/GUI.h"
 #include "Features/Features.h"
-#include "Math/Math.h"
+#include "Math/Matils.h"
 #endif // FULL_STACK
+
 
 
 

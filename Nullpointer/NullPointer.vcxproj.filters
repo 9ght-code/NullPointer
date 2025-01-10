@@ -54,6 +54,9 @@
     <ClCompile Include="GUI\OverlaySetup\Overlay.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\Tabs\AimBot\AimTab.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Memory\memory.h">
@@ -105,6 +108,12 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="GUI\OverlaySetup\Overlay.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\Tabs\AimBot\AimTab.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\sharedSpace.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

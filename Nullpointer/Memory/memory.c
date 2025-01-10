@@ -1,5 +1,10 @@
 #include "memory.h"
 
+MemoryReadFunction ReadMemory = NULL;
+MemoryWriteFunction WriteMemory = NULL;
+
+static HANDLE hDevice = NULL;
+static DWORD pid = 0;
 
 static uintptr_t get_module_base(const DWORD pid, const wchar_t* module_name) {
 	uintptr_t module_base = 0;
@@ -25,24 +30,6 @@ static uintptr_t get_module_base(const DWORD pid, const wchar_t* module_name) {
 	CloseHandle(snap_shot);
 
 	return module_base;
-}
-
-// Функция для перемещения мыши на дельта-вектор
-void moveMouse(int dx, int dy) {
-	INPUT input = { 0 };
-	input.type = INPUT_MOUSE;
-	input.mi.dx = dx;
-	input.mi.dy = dy;
-	input.mi.dwFlags = MOUSEEVENTF_MOVE;
-	SendInput(1, &input, sizeof(INPUT));
-}
-
-// Функция для получения текущей позиции мыши
-void getCursorPosition(int* x, int* y) {
-	POINT cursorPos;
-	GetCursorPos(&cursorPos);
-	*x = cursorPos.x;
-	*y = cursorPos.y;
 }
 
 
@@ -76,7 +63,7 @@ DWORD get_process_id(const wchar_t* process_name) {
 
 }
 
-boolean ReadMemory(HANDLE hDevice, uintptr_t address, PVOID buffer, SIZE_T size) {
+boolean _ReadMemoryDriver(HANDLE driver, uintptr_t address, PVOID buffer, size_t size) {
 	Request shared_request;
 	BOOL status;
 
@@ -102,7 +89,7 @@ boolean ReadMemory(HANDLE hDevice, uintptr_t address, PVOID buffer, SIZE_T size)
 	return TRUE;
 }
 
-boolean WriteMemory(HANDLE hDevice, uintptr_t address, int value, SIZE_T size) {
+boolean _WriteMemoryDriver(HANDLE hDevice, uintptr_t address, void* value, SIZE_T size) {
 	Request r;
 
 	r.target = (PVOID)address;
@@ -115,6 +102,43 @@ boolean WriteMemory(HANDLE hDevice, uintptr_t address, int value, SIZE_T size) {
 		return FALSE;
 
 	return TRUE;
+}
+
+boolean _ReadMemoryWINAPI(HANDLE driver, uintptr_t address, PVOID buffer, size_t size) {
+	HANDLE openedProcess = OpenProcess(PROCESS_VM_READ, FALSE, pid);
+
+	if (!openedProcess)
+		return FALSE;
+
+	boolean result = ReadProcessMemory(openedProcess, address, buffer, size, NULL);
+	CloseHandle(openedProcess);
+
+	return result;
+}
+
+boolean _WriteMemoryWINAPI(HANDLE driver, uintptr_t address, void* val, size_t size) {
+	HANDLE openedProcess = OpenProcess(PROCESS_VM_WRITE | PROCESS_VM_OPERATION, FALSE, pid);
+
+	if (!openedProcess)
+		return FALSE;
+
+	boolean result = WriteProcessMemory(openedProcess, address, (LPCVOID)&val, size, NULL);
+	CloseHandle(openedProcess);
+
+	return result;
+}
+
+void InitializeMemoryReader() {
+	if (hDevice == NULL) {
+		puts("[!] Using WINAPI [!]\n");
+		ReadMemory = _ReadMemoryWINAPI;
+		WriteMemory = _WriteMemoryWINAPI;
+	}
+
+	else {
+		ReadMemory = _ReadMemoryDriver;
+		WriteMemory = _WriteMemoryDriver;
+	}
 }
 
 boolean attach_to_process(PHANDLE DriverHandle, const DWORD pid) {
@@ -141,32 +165,48 @@ HANDLE loadDriver() {
 
 	puts("[+] Driver Loaded [+]\n");
 
+	hDevice = driver;
+
 	return driver;
+}
+
+
+void MoveMouse(int dx, int dy) {
+	INPUT input = { 0 };
+
+	input.type = INPUT_MOUSE;
+	input.mi.dx = dx;
+	input.mi.dy = dy;
+	input.mi.dwFlags = MOUSEEVENTF_MOVE;
+	
+	SendInput(1, &input, sizeof(INPUT));
 }
 
 
 uintptr_t initClient(PHANDLE driver) {
 
-	const DWORD pid = get_process_id(L"cs2.exe");
+	puts("[!] Getting cs2 process... [!]\n");
 
-	if (pid == 0) {
-		puts("[-] Failed to find the proccess [-]\n");
-
-		return 0;
+	while (pid == 0) {
+		pid = get_process_id(L"cs2.exe");
+		Sleep(1000);
 	}
 
-	uintptr_t client = get_module_base(pid, L"client.dll");
+	puts("[!] Getting client.dll [!]\n");
 
-	if (client == 0) {
-		puts("[-] Failed to find the module base [-]\n");
+	uintptr_t client = 0;
 
-		return 0;
+	while (client == 0) {
+		client = get_module_base(pid, L"client.dll");
+		Sleep(1000);
 	}
 
 	printf("Module base: %p\n", client);
 
-	if (attach_to_process(driver, pid))
-		puts("[+] Attachment successful [+]\n");
+	if (hDevice != NULL) {
+		if (attach_to_process(driver, pid))
+			puts("[+] Attachment successful [+]\n");
+	}
 
 	return client;
 }

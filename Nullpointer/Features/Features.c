@@ -3,10 +3,10 @@
 #define MATH
 #define GUI
 #define ENTITY_STRUCTURE
-
+#define UTILS
 #include "Features.h"
 
-PFeaturesStates featuresPointer = { 0 };
+PFeaturesStates featuresPointer;
 PEntity entitiesList = { 0 };
 PConfig data = { 0 };
 
@@ -29,14 +29,14 @@ Entity _InitializeEnemy(PHANDLE driver, uintptr_t listEntry2, int pawnHandle, PV
 
 	ReadMemory(*driver, (uintptr_t)(currentEnemy.pawn + m_vOldOrigin), &currentEnemy.absOrigin, sizeof(Vector3));
 	ReadMemory(*driver, (uintptr_t)(currentEnemy.pawn + m_pGameSceneNode), &currentEnemy.sceneNode, sizeof(int*));
-	ReadMemory(*driver, (uintptr_t)(currentEnemy.sceneNode + m_modelState + 0x80), &currentEnemy.model, sizeof(int*));
+	ReadMemory(*driver, (uintptr_t)(currentEnemy.sceneNode + m_modelState + dwBoneMatrx), &currentEnemy.model, sizeof(int*));
 
 	ReadMemory(*driver, (uintptr_t)(currentEnemy.pawn + m_bIsScoped), &currentEnemy.isScoped, sizeof(boolean));
 	ReadMemory(*driver, (uintptr_t)(currentEnemy.pawn + m_bIsDefusing), &currentEnemy.isDefusing, sizeof(boolean));
 
 	if (WorldToScreen(&currentEnemy.absOrigin, &currentEnemy.position, matrix, WINDOW_WIDTH, WINDOW_HEIGHT) == 1) {
-		Vector3 head = { .x = currentEnemy.absOrigin.x, .y = currentEnemy.absOrigin.y, .z = currentEnemy.absOrigin.z + 75.f };
-		ReadMemory(*driver, (uintptr_t)(currentEnemy.model + (6 * 32)), &head, sizeof(Vector3));
+		Vector3 head;
+		ReadMemory(*driver, (uintptr_t)(currentEnemy.model + (HEAD * 32)), &head, sizeof(Vector3));
 
 		if (WorldToScreen(&head, &currentEnemy.screenHead, matrix, WINDOW_WIDTH, WINDOW_HEIGHT) == 1) {
 
@@ -72,13 +72,13 @@ void static _Glow(PHANDLE driver, uintptr_t currentPawn) {
 	WriteMemory(*driver, (uintptr_t)(currentPawn + m_Glow + m_bGlowing), 1, 1);
 }
 
-void _TriggerBot(PEntity localPlayer, UINT8* triggerEntityTeam, int* flags) {
+void static _TriggerBot(PEntity localPlayer, UINT8* triggerEntityTeam, int* flags) {
 	boolean notInAir = *flags & (1 << 0);
 
 	if (notInAir) {
 
 
-		if (featuresPointer->TriggerTeamCheck && *triggerEntityTeam != localPlayer->team)
+		if (featuresPointer->TriggerTeamCheck == TRUE && *triggerEntityTeam != localPlayer->team)
 		{
 			mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
 			Sleep(data->sleepTriggerTime);
@@ -86,7 +86,7 @@ void _TriggerBot(PEntity localPlayer, UINT8* triggerEntityTeam, int* flags) {
 			Sleep(data->sleepTriggerTime);
 		}
 
-		else if (!featuresPointer->TriggerTeamCheck)
+		else if (featuresPointer->TriggerTeamCheck == FALSE)
 		{
 			mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
 			Sleep(data->sleepTriggerTime);
@@ -98,12 +98,33 @@ void _TriggerBot(PEntity localPlayer, UINT8* triggerEntityTeam, int* flags) {
 }
 
 
+void static _GhostExploit(PHANDLE driver, uintptr_t client) {
+	uintptr_t player;
+	ReadMemory(*driver, (uintptr_t)(client + dwLocalPlayerPawn), &player, sizeof(int*));
+
+	WriteMemory(*driver, (uintptr_t)(dwLocalPlayerPawn + m_bPawnIsAlive), 0, sizeof(boolean));
+}
+
+
 //[<-----PUBLIC METHODS----->]
 
 void InitPointersFeatures(PFeaturesStates statesPointer, PEntity array, PConfig config) {
 	featuresPointer = statesPointer;
 	entitiesList = array;
 	data = config;
+}
+
+void AimAtTarget(PEntity player) {
+	if (player->health < 0)
+		return;
+
+	POINT mouse;
+	GetCursorPos(&mouse);
+
+	float angleX = player->screenHead.x - mouse.x;
+	float angleY = player->screenHead.y - mouse.y;
+
+	MoveMouse(angleX, angleY);
 }
 
 void MultiHack(PHANDLE driver, uintptr_t client) {
@@ -121,19 +142,19 @@ void MultiHack(PHANDLE driver, uintptr_t client) {
 
 	Entity localPlayer = _InitializePlayer(driver, client);
 
-	uintptr_t entityList;
+	static uintptr_t entityList;
 	ReadMemory(*driver, (uintptr_t)((client + dwEntityList)), &entityList, sizeof(int*));
 
-	uintptr_t listEntry;
+	static uintptr_t listEntry;
 	ReadMemory(*driver, (uintptr_t)(entityList + 0x10), &listEntry, sizeof(int*));
 
-	ViewMatrix4x4 matrix;
+	static ViewMatrix4x4 matrix;
 	ReadMemory(*driver, (uintptr_t)(client + dwViewMatrix), &matrix.matrix, sizeof(int[4][4]));
 
-	Entity nearestPlayer = { 0 };
-	float minDist = 100000000;
-
 	if ((WallHack == 1 || RadarHack == 1 || TriggerBot == 1 || ESPLine || ESPBox || ESPHealth || EspTeamCheck == 1) && localPlayer.health > 0) {
+
+		Entity nearestPlayer = { 0 };
+		float minDist = 100000000;
 
 		for (int i = 0; i < 64; i++) {
 
@@ -150,10 +171,10 @@ void MultiHack(PHANDLE driver, uintptr_t client) {
 			ReadMemory(*driver, (uintptr_t)(listEntry + (0x78 * (entityIndex & 0x1FF))), &triggerBotPawn, sizeof(int*));
 
 			UINT8 triggerEntityHealth;
-			ReadMemory(*driver, (uintptr_t)(triggerBotPawn + m_iHealth), &triggerEntityHealth, sizeof(UINT8));
+			ReadMemory(*driver, (uintptr_t)(triggerBotPawn + m_iHealth), &triggerEntityHealth, sizeof(uint8_t));
 
 			UINT8 triggerEntityTeam;
-			ReadMemory(*driver, (uintptr_t)(triggerBotPawn + m_iTeamNum), &triggerEntityTeam, sizeof(UINT8));
+			ReadMemory(*driver, (uintptr_t)(triggerBotPawn + m_iTeamNum), &triggerEntityTeam, sizeof(uint8_t));
 
 			int flags;
 			ReadMemory(*driver, (uintptr_t)(localPlayer.pawn + m_fFlags), &flags, sizeof(int));
@@ -211,7 +232,10 @@ void MultiHack(PHANDLE driver, uintptr_t client) {
 
 		}
 
-		minDist = 10000000;
+		if (GetKeyState(VK_LMENU) & 0x8000) {
+			if (nearestPlayer.health > 0)
+				AimAtTarget(&nearestPlayer);
+		}
 
 
 		if (AntiFlash == 1 && localPlayer.health > 0)
@@ -220,10 +244,6 @@ void MultiHack(PHANDLE driver, uintptr_t client) {
 		featuresPointer->poolLoaded = TRUE;
 
 	}
-
-
-	if (AntiFlash == 1 && localPlayer.health > 0)
-		_AntiFlash(driver, localPlayer.pawn);
 
 	Sleep(data->sleepTime);
 }

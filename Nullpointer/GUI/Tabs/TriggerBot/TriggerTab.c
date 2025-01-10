@@ -35,7 +35,7 @@ void _EnabledCheckBox(struct nk_context* ctx, int* triggerBot, PFeaturesStates F
         *triggerBot = 1;
         Features->TriggerBot = 1;
 
-        nk_property_int(ctx, "Delay between shots", 1, &config->sleepTriggerTime, 10000, 5, 5);
+        nk_property_int(ctx, "Delay between shots (MilliSeconds)", 1, &config->sleepTriggerTime, 10000, 5, 5);
         //_ShootInAirCheck(ctx, config);
     }
 

@@ -137,6 +137,7 @@
     <ClCompile Include="Features\Features.c" />
     <ClCompile Include="GUI\GUI.c" />
     <ClCompile Include="GUI\OverlaySetup\Overlay.c" />
+    <ClCompile Include="GUI\Tabs\AimBot\AimTab.c" />
     <ClCompile Include="GUI\Tabs\ESP\ESP.c" />
     <ClCompile Include="GUI\Tabs\Glow\GlowTab.c" />
     <ClCompile Include="GUI\Tabs\Misc\MiscTab.c" />
@@ -152,6 +153,7 @@
     <ClInclude Include="GUI\GUI.h" />
     <ClInclude Include="GUI\NuklearDefinition.h" />
     <ClInclude Include="GUI\OverlaySetup\Overlay.h" />
+    <ClInclude Include="GUI\Tabs\AimBot\AimTab.h" />
     <ClInclude Include="GUI\Tabs\ESP\ESP.h" />
     <ClInclude Include="GUI\Tabs\Glow\GlowTab.h" />
     <ClInclude Include="GUI\Tabs\Misc\MiscTab.h" />
@@ -162,6 +164,7 @@
     <ClInclude Include="Libraries\include\nuklear_sdl_renderer.h" />
     <ClInclude Include="Math\Math.h" />
     <ClInclude Include="Memory\memory.h" />
+    <ClInclude Include="Memory\sharedSpace.h" />
     <ClInclude Include="NullPointer.h" />
     <ClInclude Include="Offsets.h" />
     <ClInclude Include="Request.h" />

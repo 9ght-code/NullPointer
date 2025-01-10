@@ -6,9 +6,12 @@
 
 #include "NullPointer.h"
 
-FeaturesStates Features = { 0 };
-Entity entities[64] = {0};
-static Config data = { .sleepTime = 0, .sleepTriggerTime = 10, .shootInAir = 0};
+static FeaturesStates Features = { 0 };
+static Entity entities[64] = {0};
+static Config dataNullPointer = { .sleepTime = 10, .sleepTriggerTime = 10, .shootInAir = 0};
+
+static aimKey = VK_LMENU;
+char aimKeyName[32] = "LEFT ALT";
 
 
 DWORD WINAPI ThreadWindowFunc(LPVOID lpParam) {
@@ -17,23 +20,22 @@ DWORD WINAPI ThreadWindowFunc(LPVOID lpParam) {
 }
 
 int main() {
-	HANDLE WINThread;
-	DWORD dwThreadId;
-
 	HANDLE driver = loadDriver();
+	InitializeMemoryReader();
+
 	uintptr_t client = initClient(&driver);
 
 	if (client == 0) {
 		puts("[-] INIT FAILURE [-]");
 		getchar();
 
-		return 1;
+		return 2;
 	}
 
-	WINThread = CreateThread(NULL, 0, ThreadWindowFunc, NULL, 0, &dwThreadId);
+	CreateThread(NULL, 0, ThreadWindowFunc, NULL, 0, NULL);
 	
-	InitPointersFeatures(&Features, &entities, &data);
-	InitPointersGUI(&entities, &data);
+	InitPointersFeatures(&Features, &entities, &dataNullPointer);
+	InitPointersGUI(&entities, &dataNullPointer);
 
 	while (TRUE) { MultiHack(&driver, client); }
 	

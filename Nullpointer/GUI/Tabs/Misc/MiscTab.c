@@ -35,6 +35,25 @@ void _RadarHackCheck(struct nk_context* ctx, int* radar, PFeaturesStates Feature
     }
 }
 
+void ShowGhostTab(struct nk_context* ctx, int* ghost, PFeaturesStates Features) {
+
+    static boolean showPopupGhost = 1;
+
+    nk_layout_row_dynamic(ctx, 30, 1);
+    if (nk_check_label(ctx, "Ghost exploit", *ghost == 1)) {
+        *ghost = 1;
+
+        if (showPopupGhost)
+            WarningPopup(ctx, ghost, &Features->Ghost, &showPopupGhost);
+    }
+
+    else {
+        showPopupGhost = 1;
+        *ghost = 0;
+        Features->Ghost = 0;
+    }
+}
+
 void _SleepTime(struct nk_context* ctx, PConfig config) {
     static int sleep = 0;
 
@@ -49,9 +68,10 @@ void _SleepTime(struct nk_context* ctx, PConfig config) {
     }
 }
 
-void ShowMiscTab(struct nk_context* ctx, int* antiFlash, int* radar, PFeaturesStates Features, PConfig config) {
+void ShowMiscTab(struct nk_context* ctx, int* antiFlash, int* radar, int* ghost, PFeaturesStates Features, PConfig config) {
 
     _SleepTime(ctx, config);
     _RadarHackCheck(ctx, radar, Features);
     _AntiFlashCheck(ctx, antiFlash, Features);
+    ShowGhostTab(ctx, ghost, Features);
 }
