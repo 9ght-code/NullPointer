@@ -1,6 +1,8 @@
 #include "winapi.h"
 
 static DWORD pid = 0;
+MemoryReadFunction WINAPIReadFunc = NULL;
+MemoryWriteFunction WINAPIWriteFunc = NULL;
 
 uintptr_t get_module_base(const wchar_t* module_name) {
 	uintptr_t module_base = 0;
@@ -60,8 +62,7 @@ DWORD get_process_id(const wchar_t* process_name) {
 
 }
 
-
-boolean _ReadMemoryWINAPI(HANDLE driver, uintptr_t address, PVOID buffer, size_t size) {
+boolean ReadMemoryWINAPI(HANDLE driver, uintptr_t address, PVOID buffer, size_t size) {
 	HANDLE openedProcess = OpenProcess(PROCESS_VM_READ, FALSE, pid);
 
 	if (!openedProcess)
@@ -73,13 +74,15 @@ boolean _ReadMemoryWINAPI(HANDLE driver, uintptr_t address, PVOID buffer, size_t
 	return result;
 }
 
-boolean _WriteMemoryWINAPI(HANDLE driver, uintptr_t address, void* val, size_t size) {
+boolean WriteMemoryWINAPI(HANDLE driver, uintptr_t address, void* val, size_t size) {
 	HANDLE openedProcess = OpenProcess(PROCESS_VM_WRITE | PROCESS_VM_OPERATION, FALSE, pid);
 
-	if (!openedProcess)
+	if (!openedProcess) {
+		printf("couldn't open da process \n");
 		return FALSE;
+	}
 
-	boolean result = WriteProcessMemory(openedProcess, address, (LPCVOID)&val, size, NULL);
+	boolean result = WriteProcessMemory(openedProcess, address, &val, size, NULL);
 	CloseHandle(openedProcess);
 
 	return result;

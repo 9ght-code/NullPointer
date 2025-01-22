@@ -6,11 +6,13 @@
 #include "Tabs/TriggerBot/TriggerTab.h"
 #include "Tabs/Misc/MiscTab.h"
 #include "Tabs/Glow/GlowTab.h"
+#include "Tabs/AimBot/AimTab.h"
+
 #include "OverlaySetup/Overlay.h"
 
 // [<-----FUNCS----->]
 void showWindow(PFeaturesStates Features);
-void InitPointersGUI(PEntity array, PConfig conf);
+void InitPointersGUI(PEntity array, PConfig config);
 unsigned int GetGlowColor();
 
 #ifdef INTERNAL_GUI

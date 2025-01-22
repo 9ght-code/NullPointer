@@ -2,33 +2,33 @@
 typedef __int64 ptrdiff_t;
 
 // [<-----OFFSETS----->]
-ptrdiff_t dwEntityList = 0x1A157C8;
-ptrdiff_t dwLocalPlayerPawn = 0x1869D88;
-ptrdiff_t dwViewMatrix = 0x1A80870;
-ptrdiff_t dwBoneMatrx = 0x80;
+static ptrdiff_t dwEntityList = 0x1A197E8;
+static ptrdiff_t dwLocalPlayerPawn = 0x186DE00;
+static ptrdiff_t dwViewMatrix = 0x1A84890;
+static ptrdiff_t dwBoneMatrx = 0x80;
 
 // [<-----CLIENT.DLL----->]
-ptrdiff_t m_hPlayerPawn = 0x80C;
-ptrdiff_t m_flFlashBangTime = 0x13F8;
-ptrdiff_t m_iIDEntIndex = 0x1458;
-ptrdiff_t m_iTeamNum = 0x3E3;
-ptrdiff_t m_iHealth = 0x344;
-ptrdiff_t m_Glow = 0xC00;
-ptrdiff_t m_glowColorOverride = 0x40;
-ptrdiff_t m_bGlowing = 0x51;
-ptrdiff_t m_fFlags = 0x3EC;
-ptrdiff_t jump = 0x181C670;
-ptrdiff_t m_entitySpottedState = 0x1B58;
-ptrdiff_t m_bSpotted = 0x8;
-ptrdiff_t m_vOldOrigin = 0x1324;
-ptrdiff_t m_vecViewOffset = 0xCB0;
-ptrdiff_t m_bIsScoped = 0x23E8; // bool
-ptrdiff_t m_bResumeZoom = 0x23E9; // bool
-ptrdiff_t m_bIsDefusing = 0x23EA; // bool
-ptrdiff_t m_modelState = 0x170; // int*
-ptrdiff_t m_pGameSceneNode = 0x328; //int*
-ptrdiff_t m_lifeState = 0x348; //uint8
-ptrdiff_t m_bPawnIsAlive = 0x814;
+static ptrdiff_t m_hPlayerPawn = 0x80C;
+static ptrdiff_t m_flFlashBangTime = 0x13F8;
+static ptrdiff_t m_iIDEntIndex = 0x1458;
+static ptrdiff_t m_iTeamNum = 0x3E3;
+static ptrdiff_t m_iHealth = 0x344;
+static ptrdiff_t m_Glow = 0xC00;
+static ptrdiff_t m_glowColorOverride = 0x40;
+static ptrdiff_t m_bGlowing = 0x51;
+static ptrdiff_t m_fFlags = 0x3EC;
+static ptrdiff_t jump = 0x181C670;
+static ptrdiff_t m_entitySpottedState = 0x23D0;
+static ptrdiff_t m_bSpotted = 0x8;
+static ptrdiff_t m_vOldOrigin = 0x1324;
+static ptrdiff_t m_vecViewOffset = 0xCB0;
+static ptrdiff_t m_bIsScoped = 0x23E8; // bool
+static ptrdiff_t m_bResumeZoom = 0x23E9; // bool
+static ptrdiff_t m_bIsDefusing = 0x23EA; // bool
+static ptrdiff_t m_modelState = 0x170; // int*
+static ptrdiff_t m_pGameSceneNode = 0x328; //int*
+static ptrdiff_t m_lifeState = 0x348; //uint8
+static ptrdiff_t m_bPawnIsAlive = 0x814;
 
 enum BoneID{
 

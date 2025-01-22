@@ -1,6 +1,23 @@
-﻿  Generating code
-  0 of 491 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+﻿  Features.c
+C:\Users\Night\Desktop\Source\Nullpointer\Features\Features.c(30,42): warning C4022: 'ReadMemory': pointer mismatch for actual parameter 2
+C:\Users\Night\Desktop\Source\Nullpointer\Features\Features.c(33,45): warning C4022: 'ReadMemory': pointer mismatch for actual parameter 2
+C:\Users\Night\Desktop\Source\Nullpointer\Features\Features.c(36,41): warning C4022: 'ReadMemory': pointer mismatch for actual parameter 2
+C:\Users\Night\Desktop\Source\Nullpointer\Features\Features.c(50,46): warning C4022: 'ReadMemory': pointer mismatch for actual parameter 2
+C:\Users\Night\Desktop\Source\Nullpointer\Features\Features.c(53,53): warning C4022: 'ReadMemory': pointer mismatch for actual parameter 2
+C:\Users\Night\Desktop\Source\Nullpointer\Features\Features.c(56,46): warning C4022: 'ReadMemory': pointer mismatch for actual parameter 2
+C:\Users\Night\Desktop\Source\Nullpointer\Features\Features.c(59,51): warning C4022: 'ReadMemory': pointer mismatch for actual parameter 2
+C:\Users\Night\Desktop\Source\Nullpointer\Features\Features.c(62,51): warning C4022: 'ReadMemory': pointer mismatch for actual parameter 2
+C:\Users\Night\Desktop\Source\Nullpointer\Features\Features.c(65,53): warning C4022: 'ReadMemory': pointer mismatch for actual parameter 2
+C:\Users\Night\Desktop\Source\Nullpointer\Features\Features.c(71,41): warning C4022: 'ReadMemory': pointer mismatch for actual parameter 2
+C:\Users\Night\Desktop\Source\Nullpointer\Features\Features.c(77,47): warning C4022: 'ReadMemory': pointer mismatch for actual parameter 2
+C:\Users\Night\Desktop\Source\Nullpointer\Features\Features.c(98,71): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Night\Desktop\Source\Nullpointer\Features\Features.c(98,90): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\Night\Desktop\Source\Nullpointer\Features\Features.c(121,78): warning C4022: 'WriteMemory': pointer mismatch for actual parameter 2
+C:\Users\Night\Desktop\Source\Nullpointer\Features\Features.c(121,93): warning C4022: 'WriteMemory': pointer mismatch for actual parameter 3
+C:\Users\Night\Desktop\Source\Nullpointer\Features\Features.c(142,21): warning C4047: '=': 'uintptr_t' differs in levels of indirection from 'void *'
+  Generating code
+  2 of 483 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+    11 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   NullPointer.vcxproj -> C:\Users\Night\Desktop\Source\Nullpointer\x64\Release\NullPointer.exe

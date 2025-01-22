@@ -3,12 +3,13 @@
 //[<-----INTERNAL DECLARATIONS----->]
 #define ENTITY_STRUCTURE
 #define INTERNAL_GUI
+#define UTILS
 #include "GUI.h"
 
 //[<-----GLOBALS----->]
 PAppInfo appInfo;
 PEntity entities;
-PConfig dataGUI = { 0 };
+PConfig dataGUI;
 GUIConfig conf = { .boxColor = {255, 255, 255, 255} };
 
 static boolean showMenu = FALSE;
@@ -76,6 +77,7 @@ void _DrawESP(PFeaturesStates Features) {
         }
 
 
+
     }
 }
 
@@ -111,7 +113,6 @@ void HandleF9Key() {
 void showWindow(PFeaturesStates Features) {
     int running = 1;
     static boolean f9 = FALSE;
-    static SDL_bool cursor = SDL_FALSE;
     static int activeTab = TAB_TRIGGERBOT;
 
     appInfo = InitGUI();
@@ -147,6 +148,10 @@ void showWindow(PFeaturesStates Features) {
         SDL_SetRenderDrawColor(appInfo->render, 0, 0, 0, 0);
         SDL_RenderClear(appInfo->render);
 
+        if (Features->FOV == TRUE) {
+            circleRGBA(appInfo->render, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, dataGUI->fovSize, 255, 255, 255, 255);
+        }
+
         if (Features->poolLoaded) {
 
             if (Features->Box || Features->Health || Features->Line) 
@@ -167,7 +172,9 @@ void showWindow(PFeaturesStates Features) {
         if (nk_begin(appInfo->ctx, "NullPointer - 9GHT", nk_rect(50, 50, 975, 500), flags))
             {
 
-                static enum State triggerBot, wallhack, bhop, antiFlash, radar, box, line, health, espTeamCheck, triggerTeamCheck, ghost = DISABLED;
+                static enum State triggerBot, wallhack, bhop, antiFlash, radar, box, 
+                    line, health, espTeamCheck, triggerTeamCheck, aimbot, fov = DISABLED;
+
                 nk_menubar_begin(appInfo->ctx);
 
                 nk_layout_row_static(appInfo->ctx, 30, 150, TAB_COUNT);
@@ -191,7 +198,10 @@ void showWindow(PFeaturesStates Features) {
                     ShowESPTab(appInfo->ctx, &espTeamCheck, &line, &box, &health, Features, &conf);
 
                 else if (activeTab == TAB_MISC)
-                    ShowMiscTab(appInfo->ctx, &antiFlash, &radar, &ghost,Features, dataGUI);
+                    ShowMiscTab(appInfo->ctx, &antiFlash, &radar, Features, dataGUI);
+
+                else if (activeTab == TAB_AIMBOT)
+                    ShowAimTab(appInfo->ctx, &aimbot, &fov, Features, dataGUI, &conf);
                 
             }
 

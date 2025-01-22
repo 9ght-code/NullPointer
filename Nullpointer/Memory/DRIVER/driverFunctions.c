@@ -9,6 +9,26 @@ boolean attach_to_process(const DWORD pid) {
 	return DeviceIoControl(hDevice, IO_ATTACH, &req, sizeof(Request), &req, sizeof(Request), NULL, NULL);
 }
 
+void UnloadDriver() {
+	DeviceIoControl(hDevice, IO_UNLOAD, NULL, NULL, NULL, NULL, NULL, NULL);
+}
+
+HANDLE loadDriver() {
+	const HANDLE driver = CreateFile(L"\\\\.\\SecondMouse", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+	if (driver == INVALID_HANDLE_VALUE) {
+		puts("[-] Failed to load the driver [-]\n");
+
+		return 0;
+	}
+
+	puts("[+] Driver Loaded [+]\n");
+
+	hDevice = driver;
+
+	return driver;
+}
+
 boolean ReadMemoryDriver(HANDLE driver, uintptr_t address, PVOID buffer, size_t size) {
 	Request shared_request;
 	BOOL status;
@@ -50,27 +70,7 @@ boolean WriteMemoryDriver(HANDLE driver, uintptr_t address, void* value, SIZE_T 
 	return TRUE;
 }
 
-void UnloadDriver() {
-	DeviceIoControl(hDevice, IO_UNLOAD, NULL, NULL, NULL, NULL, NULL, NULL);
-}
 
-HANDLE loadDriver() {
-	const HANDLE driver = CreateFile(L"\\\\.\\SecondMouse", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-
-	if (driver == INVALID_HANDLE_VALUE) {
-		puts("[-] Failed to load the driver [-]\n");
-
-		return 0;
-	}
-
-	puts("[+] Driver Loaded [+]\n");
-
-	hDevice = driver;
-
-	return driver;
-}
-
-
-PHANDLE GetDriverHandle() {
-	return &hDevice;
+HANDLE GetDriverHandle() {
+	return hDevice;
 }

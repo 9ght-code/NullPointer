@@ -17,6 +17,18 @@ void _AntiFlashCheck(struct nk_context* ctx, int* antiFlash, PFeaturesStates Fea
     }
 }
 
+void _DelaySleep(struct nk_context* ctx, PConfig conf) {
+    static char buffer[8];
+
+    nk_layout_row_dynamic(ctx, 30, 3);
+
+    nk_label(ctx, "Sleep Value", NK_TEXT_ALIGN_LEFT);
+    nk_slider_int(ctx, 1, &conf->sleepTime, 180, 1);
+
+    snprintf(buffer, sizeof(buffer), "%i", conf->sleepTime);
+    nk_label(ctx, buffer, NK_TEXT_ALIGN_RIGHT);
+}
+
 void _RadarHackCheck(struct nk_context* ctx, int* radar, PFeaturesStates Features) {
     static boolean showPopup = 1;
 
@@ -35,31 +47,12 @@ void _RadarHackCheck(struct nk_context* ctx, int* radar, PFeaturesStates Feature
     }
 }
 
-void ShowGhostTab(struct nk_context* ctx, int* ghost, PFeaturesStates Features) {
-
-    static boolean showPopupGhost = 1;
-
-    nk_layout_row_dynamic(ctx, 30, 1);
-    if (nk_check_label(ctx, "Ghost exploit", *ghost == 1)) {
-        *ghost = 1;
-
-        if (showPopupGhost)
-            WarningPopup(ctx, ghost, &Features->Ghost, &showPopupGhost);
-    }
-
-    else {
-        showPopupGhost = 1;
-        *ghost = 0;
-        Features->Ghost = 0;
-    }
-}
-
 void _SleepTime(struct nk_context* ctx, PConfig config) {
     static int sleep = 0;
 
     if (nk_check_label(ctx, "Sleep Time", sleep == 1)) {
         sleep = 1;
-        nk_property_int(ctx, "Value: ", 1, &config->sleepTime, 10000, 10, 10);
+        _DelaySleep(ctx, config);
     }
 
     else {
@@ -68,10 +61,9 @@ void _SleepTime(struct nk_context* ctx, PConfig config) {
     }
 }
 
-void ShowMiscTab(struct nk_context* ctx, int* antiFlash, int* radar, int* ghost, PFeaturesStates Features, PConfig config) {
+void ShowMiscTab(struct nk_context* ctx, int* antiFlash, int* radar, PFeaturesStates Features, PConfig config) {
 
     _SleepTime(ctx, config);
     _RadarHackCheck(ctx, radar, Features);
     _AntiFlashCheck(ctx, antiFlash, Features);
-    ShowGhostTab(ctx, ghost, Features);
 }
