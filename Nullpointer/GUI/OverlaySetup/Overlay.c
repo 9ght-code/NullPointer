@@ -18,17 +18,28 @@
 //[<-----GLOBALS----->]
 SDL_Renderer* renderer;
 
-void _SetWindowTransparency(SDL_Window* window) {
+void SetWindowTransparency(SDL_Window* window, boolean state) {
+
     SDL_SysWMinfo wmInfo;
     SDL_VERSION(&wmInfo.version);
     SDL_GetWindowWMInfo(window, &wmInfo);
 
     HWND hwnd = wmInfo.info.win.window;
     LONG exStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
-    SetWindowLong(hwnd, GWL_EXSTYLE, exStyle | WS_EX_LAYERED);
 
+    if (state == TRUE) {
+        exStyle |= WS_EX_LAYERED | WS_EX_TRANSPARENT;
+        exStyle |= WS_EX_NOACTIVATE;
+    }
+
+    else {
+        exStyle &= ~WS_EX_TRANSPARENT;
+    }
+
+    SetWindowLongW(hwnd, GWL_EXSTYLE, exStyle);
     SetLayeredWindowAttributes(hwnd, RGB(0, 0, 0), 0, LWA_COLORKEY);
 }
+
 
 void _SetupSDL(PAppInfo info) {
     SDL_Window* win;
@@ -41,7 +52,7 @@ void _SetupSDL(PAppInfo info) {
 
     win = SDL_CreateWindow("NightFall",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_BORDERLESS);
+        WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN | SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_BORDERLESS | SDL_WINDOW_SKIP_TASKBAR | SDL_WINDOW_ALWAYS_ON_TOP);
 
     if (win == NULL) {
         SDL_Log("Error SDL_CreateWindow %s", SDL_GetError());
@@ -52,6 +63,7 @@ void _SetupSDL(PAppInfo info) {
 
     SDL_SetWindowAlwaysOnTop(win, SDL_TRUE);
     SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    SDL_SetWindowKeyboardGrab(win, SDL_TRUE);
 
     flags |= SDL_RENDERER_ACCELERATED;
     flags |= SDL_RENDERER_PRESENTVSYNC;
@@ -63,10 +75,7 @@ void _SetupSDL(PAppInfo info) {
         exit(-1);
     }
 
-    _SetWindowTransparency(win);
-    SDL_ShowCursor(SDL_FALSE);
-    SDL_SetWindowGrab(win, SDL_FALSE);
-
+    SetWindowTransparency(win, TRUE);
     info->render = renderer;
     info->win = win;
 

@@ -2,6 +2,7 @@
 
 #include "../dependencies.h"
 #include "../Libraries/include/SDL2/SDL.h"
+#include "../Libraries/include/SDL2/SDL2_gfxPrimitives.h"		
 #include "../Libraries/include/SDL2/SDL_syswm.h"
 #include "../Libraries/include/SDL2/SDL_image.h"
 #include "../Libraries/include/nuklear.h"
@@ -10,11 +11,15 @@
 typedef struct _GUIConfig {
 	struct nk_colorf boxColor;
 	struct nk_colorf teamBoxColor;
+
+	struct nk_colorf glowColor;
 	struct nk_colorf lineColor;
+
+	struct nk_colorf fovColor;
 	struct nk_colorf hpColor;
+
 	struct nk_colorf zoomColor;
 	struct nk_colorf defuseColor;
-	struct nk_colorf glowColor;
 
 }GUIConfig, * PGUIConfig;
 

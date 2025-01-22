@@ -9,26 +9,67 @@
 #define WINDOW_HEIGHT GetSystemMetrics(SM_CYSCREEN)
 
 typedef struct _Feature {
+	boolean Aimbot;
     boolean TriggerBot;
     boolean Glow;
+
 	boolean Line;
 	boolean Box;
 	boolean Health;
+
 	boolean AntiFlash;
 	boolean Bhop;
 	boolean RadarHack;
+
 	boolean ESPTeamCheck;
 	boolean TriggerTeamCheck;
+
+	boolean FOV;
 	boolean poolLoaded;
 
+	boolean Ghost;
     boolean UNLOAD;
 
 } FeaturesStates, * PFeaturesStates;
 
+
+enum Mode {
+
+	HOLD = 0,
+	PRESS = 1
+
+};
+
+typedef struct _KeyBind {
+	int keyID;
+	char* name;
+}KeyBind, * PKeyBind;
+
+
+typedef struct _KeyEntry {
+	KeyBind keys[7];
+	int selectedKeyAim;
+	int selectedKeyTrigger;
+
+}KeyEntry, * PKeyEntry;
+
+
 typedef struct _Config {
 	int sleepTime;
-	int sleepTriggerTime;
+	const SYSTEM_INFO sysinf;
+
+	int preShotDelay;
+	int postShotDelay;
+
+	DWORD sleepTriggerTime;
 	boolean shootInAir;
+
+	int fovSize;
+	KeyEntry keyEntry;
+
+	enum Mode aimbotMode;
+	enum Mode triggerMode;
+
 
 }Config, * PConfig;
 
@@ -41,19 +82,20 @@ typedef struct _Entity {
 	boolean isDefusing;
 	boolean isAlly;
 
-	uintptr_t pawn;
 	UINT8 team;
 	UINT8 health;
 
 	Vector3 absOrigin;
 	Vector2 position;
 	Vector2 screenHead;
+	Vector2 screenBody;
 
 	float width;
 	float height;
 
-	int* sceneNode;
-	int* model;
+	uintptr_t pawn;
+	uintptr_t sceneNode;
+	uintptr_t model;
 
 }Entity, * PEntity;
 
@@ -83,13 +125,20 @@ typedef struct _Entity {
 #include "Math/Math.h"
 #endif
 
+#ifdef UTILS
+#include "Utils/Utils.h"
+#endif // UTILS
+
+
 #ifdef FULL_STACK
 #include "Offsets.h"
 #include "Memory/memory.h"
 #include "GUI/GUI.h"
 #include "Features/Features.h"
-#include "Math/Math.h"
+#include "Math/Matils.h"
+#include "Utils/Utils.h"
 #endif // FULL_STACK
+
 
 
 
