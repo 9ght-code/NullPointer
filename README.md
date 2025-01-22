@@ -12,6 +12,7 @@
 + <code>open source</code> you can use it freely
 + <code>read/write modes</code> the application **DOESN'T** read only!
 + <code>kernel</code> uses the driver to communicate with the process memory
++ <code>WINAPI</code> supports WINAPI in case you can't load the driver
 + <code>FULL C-BASED</code> it's the perfect reason for educational purposes, isn't it?
 + ~~<code>NO GUI</code> it's the console based application~~
 + <code>Simple GUI</code> now it has the simple GUI menu!
@@ -34,8 +35,11 @@
  - HP bar
    
 - [X] Any GUI menu
-- [ ] AimBot
-- [ ] No Recoil
+- [X] AimBot
+- [ ] No Recoil (Direct, Mouse simulating)
+- [ ] Config system
+- [ ] MultiThreading
+- [ ] ESP names, distance
 - [X] Radar Hack <code>WRITES</code>
 
 ***
@@ -61,7 +65,10 @@
 
 ![](https://github.com/user-attachments/assets/514ef043-3497-4de0-bb24-751532241d09)
 
-- Sometimes the cursor may appear when clicking on the box
+![](https://github.com/user-attachments/assets/8d2ab91c-87a1-4ba3-bcf9-b2ba16f7fb9e)
+
+
+- Sometimes the aimbot may be laggy!
 - You need to set the color for each ESP feature manually!
 ***
 
@@ -72,6 +79,8 @@
 - [X] open regedit -> **HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\CI\Config** -> set VulnerableDriverBlocklistEnable (**DWORD** type) to 0. If there's no path like this, create it
 - <code>How can i launch the game in the safe mode?</code>
 - [X] Steam -> CS2 -> Properties -> enter <code>-insecure</code> into the launch options field
+- <code> I did everything but it still doesn't work</code>
+- [X] Set to Windowed Fullscreen
 
 ***
 # Other Links
