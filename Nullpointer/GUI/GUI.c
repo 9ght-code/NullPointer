@@ -3,17 +3,13 @@
 //[<-----INTERNAL DECLARATIONS----->]
 #define ENTITY_STRUCTURE
 #define INTERNAL_GUI
-#define UTILS
 #include "GUI.h"
 
 //[<-----GLOBALS----->]
 PAppInfo appInfo;
 PEntity entities;
-PConfig dataGUI;
+PConfig data;
 GUIConfig conf = { .boxColor = {255, 255, 255, 255} };
-
-static boolean showMenu = FALSE;
-static enum nk_panel_flags flags;
 
 //[<-----PRIVATE GUI METHODS----->]
 
@@ -27,7 +23,7 @@ void _DrawESP(PFeaturesStates Features) {
         if (entities[i].draw == 1 || entities[i].health <= 0 || entities[i].pawn == NULL)
             continue;
 
-        SDL_Rect model = { .x = entities[i].screenHead.x, .y = entities[i].screenHead.y, .h = entities[i].height, .w = entities[i].width };
+        SDL_Rect model = { .x = entities[i].position.x - 10, .y = entities[i].screenHead.y, .h = entities[i].height, .w = entities[i].width };
 
         float healthPrecantage = entities[i].health / 100.0f;
         float healthBarHeight = model.h * healthPrecantage;
@@ -77,7 +73,6 @@ void _DrawESP(PFeaturesStates Features) {
         }
 
 
-
     }
 }
 
@@ -85,34 +80,20 @@ void _DrawESP(PFeaturesStates Features) {
 
 void InitPointersGUI(PEntity array, PConfig config) {
     entities = array;
-    dataGUI = config;
+    data = config;
 }
 
 unsigned int GetGlowColor() {
 
     struct nk_color pickedColor = nk_rgba_fv(&conf.glowColor.r);
+
     return _RgbaToHex(pickedColor.r, pickedColor.g, pickedColor.b, pickedColor.a);
-}
-
-void HandleF9Key() {
-
-    if (GetKeyState(VK_F9)) {
-        if (showMenu == FALSE) {
-            showMenu = TRUE;
-            SetWindowTransparency(appInfo->win, FALSE);
-        }
-    }
-    else {
-        showMenu = FALSE;
-        SetWindowTransparency(appInfo->win, TRUE);
-    }
 }
 
 //[<-----MAIN LOGIC----->]
 
 void showWindow(PFeaturesStates Features) {
     int running = 1;
-    static boolean f9 = FALSE;
     static int activeTab = TAB_TRIGGERBOT;
 
     appInfo = InitGUI();
@@ -130,27 +111,18 @@ void showWindow(PFeaturesStates Features) {
 
     while (running)
     {
-
         /* Input */
         SDL_Event evt;
 
         nk_input_begin(appInfo->ctx);
         while (SDL_PollEvent(&evt)) {
-
             if (evt.type == SDL_QUIT) goto cleanup;
-
-
             nk_sdl_handle_event(&evt);
         }
-
         nk_input_end(appInfo->ctx);
         
         SDL_SetRenderDrawColor(appInfo->render, 0, 0, 0, 0);
         SDL_RenderClear(appInfo->render);
-
-        if (Features->FOV == TRUE) {
-            circleRGBA(appInfo->render, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, dataGUI->fovSize, 255, 255, 255, 255);
-        }
 
         if (Features->poolLoaded) {
 
@@ -161,20 +133,16 @@ void showWindow(PFeaturesStates Features) {
             
         }
 
-        HandleF9Key();
+        if (GetKeyState(VK_F9)) {
 
-        if (showMenu == TRUE)
-            flags = NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_SCALABLE | NK_WINDOW_BACKGROUND;
+            SDL_ShowCursor(SDL_ENABLE);
+            SDL_SetRelativeMouseMode(SDL_FALSE);
 
-        else
-            flags = NK_WINDOW_HIDDEN;
-
-        if (nk_begin(appInfo->ctx, "NullPointer - 9GHT", nk_rect(50, 50, 975, 500), flags))
+            if (nk_begin(appInfo->ctx, "NullPointer - 9GHT", nk_rect(50, 50, 975, 500),
+                NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_SCALABLE))
             {
 
-                static enum State triggerBot, wallhack, bhop, antiFlash, radar, box, 
-                    line, health, espTeamCheck, triggerTeamCheck, aimbot, fov = DISABLED;
-
+                static enum State triggerBot, wallhack, bhop, antiFlash, radar, box, line, health, espTeamCheck, triggerTeamCheck = DISABLED;
                 nk_menubar_begin(appInfo->ctx);
 
                 nk_layout_row_static(appInfo->ctx, 30, 150, TAB_COUNT);
@@ -192,20 +160,23 @@ void showWindow(PFeaturesStates Features) {
                     ShowGlowTab(appInfo->ctx, &wallhack, Features, &conf);
 
                 else if (activeTab == TAB_TRIGGERBOT)
-                    ShowTriggerTab(appInfo->ctx, &triggerBot, &triggerTeamCheck, Features, dataGUI);
+                    ShowTriggerTab(appInfo->ctx, &triggerBot, &triggerTeamCheck, Features, &conf);
 
                 else if (activeTab == TAB_ESP)
                     ShowESPTab(appInfo->ctx, &espTeamCheck, &line, &box, &health, Features, &conf);
 
                 else if (activeTab == TAB_MISC)
-                    ShowMiscTab(appInfo->ctx, &antiFlash, &radar, Features, dataGUI);
-
-                else if (activeTab == TAB_AIMBOT)
-                    ShowAimTab(appInfo->ctx, &aimbot, &fov, Features, dataGUI, &conf);
+                    ShowMiscTab(appInfo->ctx, &antiFlash, &radar, Features, data);
                 
             }
 
             nk_end(appInfo->ctx);
+        }
+
+        else {
+            SDL_ShowCursor(SDL_DISABLE);
+            SDL_SetRelativeMouseMode(SDL_TRUE);
+        }
 
         nk_sdl_render(NK_ANTI_ALIASING_ON);
         SDL_RenderPresent(appInfo->render);
